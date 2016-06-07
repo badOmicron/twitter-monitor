@@ -42,9 +42,7 @@ public class TwitterMonitorTopicRestController {
 		 * Access Tokens , ahí podrás ver las llaves que debes poner en la
 		 * siguiente sección.
 		 */
-		twitter.setOAuthConsumer("q8TheJW3NLMdSFKkpMAeeeoqA", "0Uk167lb5OSsgimUpWlnYozC5GzL3TLBC0Um3oieFyWvQF0bOW");
-		twitter.setOAuthAccessToken(new AccessToken("3877098085-skJ2Sat6hL3iW6IXWBxAV3MZJVOMi3venxRITjm",
-				"RWFECCxUo1Fe4WJyhVrXGO2o0DBl9lPDEqN1vV4W8OaUl"));
+	
 
 		try {
 
