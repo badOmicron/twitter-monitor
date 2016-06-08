@@ -8,12 +8,13 @@ public class TwitterMessage implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TwitterMessage(long id, Date fechaCreacion, String usuario, String mensaje) {
+	public TwitterMessage(long idItem, Date timeStamp, String message, String autor, String link) {
 		super();
-		this.id = id;
-		this.fechaCreacion = fechaCreacion;
-		this.usuario = usuario;
-		this.mensaje = mensaje;
+		this.idItem = idItem;
+		this.timeStamp = timeStamp;
+		this.message = message;
+		this.autor = autor;
+		this.link = link;
 	}
 
 	/**
@@ -21,48 +22,58 @@ public class TwitterMessage implements Serializable {
 	 */
 	private static final long serialVersionUID = 5556133760694766494L;
 
-	private long id;
-	private Date fechaCreacion;
-	private String usuario;
-	private String mensaje;
+	private long idItem;
+	private Date timeStamp;
+	private String message;
+	private String autor;
+	private String link;
 
-	public long getId() {
-		return id;
+	public long getIdItem() {
+		return idItem;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setIdItem(long idItem) {
+		this.idItem = idItem;
 	}
 
-	public Date getFechaCreacion() {
-		return fechaCreacion;
+	public Date getTimeStamp() {
+		return timeStamp;
 	}
 
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
+	public void setTimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
-	public String getUsuario() {
-		return usuario;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
-	public String getMensaje() {
-		return mensaje;
+	public String getAutor() {
+		return autor;
 	}
 
-	public void setMensaje(String mensaje) {
-		this.mensaje = mensaje;
+	public void setAutor(String autor) {
+		this.autor = autor;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("TwitterMessage [id=").append(id).append(", fechaCreacion=").append(fechaCreacion)
-				.append(", usuario=").append(usuario).append(", mensaje=").append(mensaje).append("]");
+		builder.append("TwitterMessage [idItem=").append(idItem).append(", timeStamp=").append(timeStamp)
+				.append(", message=").append(message).append(", autor=").append(autor).append(", link=").append(link)
+				.append("]");
 		return builder.toString();
 	}
 
