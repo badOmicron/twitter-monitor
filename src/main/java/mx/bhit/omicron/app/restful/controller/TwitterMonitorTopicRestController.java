@@ -23,11 +23,13 @@ public class TwitterMonitorTopicRestController {
 	@RequestMapping("/topic")
 	public Response startMonitor() {
 		logger.debug("Monitoreo Controller...");
+		System.out.println("Monitoreo Controller");
 		return new Response();
 	}
 
 	@RequestMapping("/config")
-	public @ResponseBody Response addConfiguration(@RequestBody Request request) {
+	public Response addConfiguration(@RequestBody Request request) {
+		System.out.println("Config Controller");
 		SocialNetworksMonitoredData socialNetworksMonitoredData = new SocialNetworksMonitoredData();
 		DataItems dataItems = new DataItems();
 		dataItems.getDataItems()
