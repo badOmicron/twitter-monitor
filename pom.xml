@@ -16,6 +16,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<monitor.twitter.version>1.0.0.0.0</monitor.twitter.version>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencyManagement>
