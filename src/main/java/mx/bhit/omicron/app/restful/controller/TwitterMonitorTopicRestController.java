@@ -24,12 +24,6 @@ public class TwitterMonitorTopicRestController {
 	public Response startMonitor() {
 		logger.debug("Monitoreo Controller...");
 		System.out.println("Monitoreo Controller");
-		return new Response();
-	}
-
-	@RequestMapping("/config")
-	public Response addConfiguration(@RequestBody Request request) {
-		System.out.println("Config Controller");
 		SocialNetworksMonitoredData socialNetworksMonitoredData = new SocialNetworksMonitoredData();
 		DataItems dataItems = new DataItems();
 		dataItems.getDataItems()
@@ -40,7 +34,6 @@ public class TwitterMonitorTopicRestController {
 		socialNetworksMonitoredData.getSocialNetworksMonitoredData().put("searchTimeStamp", "");
 		socialNetworksMonitoredData.getSocialNetworksMonitoredData().put("numDataItems", 2);
 		socialNetworksMonitoredData.getSocialNetworksMonitoredData().put("DataItems", dataItems.getDataItems());
-
 		return socialNetworksMonitoredData;
 	}
 
