@@ -8,6 +8,9 @@
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
+	<context:annotation-config />
+	<context:component-scan base-package="mx.bhit.omicron.app.restful" />
+
 
 	<!-- for processing requests with annotated controller methods and set Message 
 		Convertors from the list of convertors -->
@@ -25,6 +28,5 @@
 		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 	</beans:bean>
 
-	<context:component-scan base-package="mx.bhit.omicron.app.restful.controller" />
 
 </beans:beans>
