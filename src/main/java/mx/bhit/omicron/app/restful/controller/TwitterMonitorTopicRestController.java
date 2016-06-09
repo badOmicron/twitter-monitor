@@ -107,7 +107,7 @@ public class TwitterMonitorTopicRestController {
                 msgError);
             return socialNetworksMonitoringConfProfResponse;
         }
-        trigger.stopMonitoreoTopicos();
+        Trigger.stopMonitoreoTopicos();
         msgError = "the monitor has stopped";
         socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
             "success");
