@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 
+/**
+ * TODO [Agregar documentación de la clase]
+ * @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
+ * @version 1.0
+ * @since SIIRFE 6.0
+ */
 public class Wp2KafkaProducer {
     private static final Logger logger = LoggerFactory.getLogger(Wp2KafkaProducer.class);
 
