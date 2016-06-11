@@ -42,7 +42,7 @@ public class Wp2KafkaProducer {
      */
     public void writeToKafka(String content) {
         logger.debug("Writing to kafkaTopic [" + topic + "]");
-        String messageStr = new String("Message_" + "ORlando WAS HERE");
+        String messageStr = new String(content);
         producer.send(new KeyedMessage<Integer, String>(this.topic, messageStr));
     }
 
