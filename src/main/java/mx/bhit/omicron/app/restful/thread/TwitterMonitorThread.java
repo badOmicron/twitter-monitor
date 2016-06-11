@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bhit.omicron.app.restful.model.DataItems;
 import mx.bhit.omicron.app.restful.model.SocialNetworksMonitoredData;
 import mx.bhit.omicron.app.restful.model.TwitterMessage;
+import mx.bhit.omicron.app.restful.producer.Wp2KafkaProducer;
 import mx.bhit.omicron.app.restful.task.TwitterTask;
 import mx.bhit.omicron.app.restful.utils.TwitterUtil;
 import twitter4j.Query;
@@ -132,6 +133,11 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
                 }
             } while ((queryTwitter = result.nextQuery()) != null);
             logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(socialNetworksMonitoredData));
+
+            Wp2KafkaProducer Wp2KafkaProducer = new Wp2KafkaProducer("twitter");
+            Wp2KafkaProducer.writeToKafka(
+                mapper.writerWithDefaultPrettyPrinter().writeValueAsString(socialNetworksMonitoredData));
+
         } catch (Exception e) {
             // TODO: handle exception
             logger.error("error...");
