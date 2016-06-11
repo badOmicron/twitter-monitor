@@ -11,8 +11,8 @@
 	</appender>
 
 
-	<logger name="mx.ine.rfe.siirfe.aplicaciones.analisisregistralext">
-		<level value="debug" />
+	<logger name="mx.bhit.omicron.app.restful">
+		<level value="info" />
 	</logger>
 
 	<!-- 3rdparty Loggers -->

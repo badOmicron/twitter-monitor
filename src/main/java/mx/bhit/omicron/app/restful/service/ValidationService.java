@@ -15,7 +15,7 @@ public class ValidationService {
     public String validaExpresion(String expression) {
 
         String msg = null;
-        msg = Objects.isNull(expression) ? "keyword expression  cant be null" : null;
+        // msg = Objects.isNull(expression) ? "keyword expression cant be null" : null;
 
         return msg;
     }

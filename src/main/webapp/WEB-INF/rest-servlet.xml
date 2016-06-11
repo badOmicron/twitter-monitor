@@ -9,7 +9,7 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 	<context:annotation-config />
-	<context:component-scan base-package="mx.bhit.omicron.app.restful" />
+	<context:component-scan base-package="mx.bhit.omicron.app.restful.controller" />
 
 
 	<!-- for processing requests with annotated controller methods and set Message 

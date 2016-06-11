@@ -22,6 +22,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +38,11 @@ import mx.bhit.omicron.app.restful.model.SocialNetworksMonitoredData;
  * @since SIIRFE 6.0
  */
 public class TwitterTask extends TimerTask {
+    private static final Logger logger = LoggerFactory.getLogger(TwitterTask.class);
+
+    /**
+     * TODO [Agregar documentación del atributo]
+     */
     public static ExecutorService executor;
 
     // private TwitterMonitorThread twitterMonitorThread;
@@ -64,6 +72,7 @@ public class TwitterTask extends TimerTask {
      * lo declara (non-Javadoc)
      * @see java.util.TimerTask#run()
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void run() {
         // TODO [codificar el cuerpo del método]
@@ -77,7 +86,7 @@ public class TwitterTask extends TimerTask {
                 try {
                     result = (SocialNetworksMonitoredData) resultObject.get();
                     try {
-                        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
+                        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
                     } catch (JsonProcessingException e) {
                         // TODO [Manejar la excepcion de forma correcta]
                         System.out.println("Error al imprimir Objeto JSON");

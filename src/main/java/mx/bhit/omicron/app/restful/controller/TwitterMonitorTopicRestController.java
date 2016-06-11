@@ -1,5 +1,7 @@
 package mx.bhit.omicron.app.restful.controller;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import mx.bhit.omicron.app.restful.model.Request;
 import mx.bhit.omicron.app.restful.model.Response;
 import mx.bhit.omicron.app.restful.model.SocialNetworksMonitoringConfProfResponse;
-import mx.bhit.omicron.app.restful.service.TwitterMonitorThread;
 import mx.bhit.omicron.app.restful.service.ValidationService;
+import mx.bhit.omicron.app.restful.thread.TwitterMonitorThread;
 
 /**
  * TODO [Agregar documentación de la clase]
@@ -64,14 +66,19 @@ public class TwitterMonitorTopicRestController {
             return socialNetworksMonitoringConfProfResponse;
         }
 
-        // Se valida la expresion
-        msgError = validationService.validaExpresion(expression);
-        if (msgError != null) {
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-                "error");
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-                "msgError");
-            return socialNetworksMonitoringConfProfResponse;
+        /*
+         * Se valida la expresion.
+         * Si no hay expresión no hay query.En caso contrario se valida la Forma Normal Comun*/
+        Boolean query = (Objects.isNull(expression)) ? false : true;
+        if (query) {
+            msgError = validationService.validaExpresion(expression);
+            if (msgError != null) {
+                socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
+                    "error");
+                socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+                    "msgError");
+                return socialNetworksMonitoringConfProfResponse;
+            }
         }
 
         // Si no hubo errores, se agrega la configuración del Thread
@@ -82,7 +89,7 @@ public class TwitterMonitorTopicRestController {
         socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
             "The monitor is up and running");
 
-        TwitterMonitorThread TwitterMonitorThread = new TwitterMonitorThread();
+        TwitterMonitorThread TwitterMonitorThread = new TwitterMonitorThread(query, expression);
         trigger.execute(TwitterMonitorThread);
 
         return socialNetworksMonitoringConfProfResponse;
