@@ -28,22 +28,18 @@ import twitter4j.auth.AccessToken;
 public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredData> {
     private static final Logger logger = LoggerFactory.getLogger(TwitterMonitorThread.class);
 
-    private Twitter twitter;
-    private DataItems dataItems;
-    private SocialNetworksMonitoredData socialNetworksMonitoredData;
+    private static Twitter twitter;
+    private static DataItems dataItems;
+    private static SocialNetworksMonitoredData socialNetworksMonitoredData;
     private String expression;
     private Boolean query;
     private Query queryTwitter;
 
-    /**
-     * TODO [Agregar documentacion al método]
-     * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
-     */
-    public TwitterMonitorThread() {
+    static {
         logger.info("configurando thread de monitor");
         System.out.println("configurando thread de monitor");
         // Obtienes una instancia de Twitter.
-        this.twitter = new TwitterFactory().getInstance();
+        twitter = new TwitterFactory().getInstance();
         /*
          * Creas el acceso a tu cuenta, para generar las claves de autorización
          * desde tu cuenta visita el siguiente sitio: https://apps.twitter.com/
@@ -51,11 +47,20 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
          * Access Tokens , ahí podrás ver las llaves que debes poner en la
          * siguiente sección.
          */
-        this.twitter.setOAuthConsumer("q8TheJW3NLMdSFKkpMAeeeoqA",
+        twitter.setOAuthConsumer("q8TheJW3NLMdSFKkpMAeeeoqA",
             "0Uk167lb5OSsgimUpWlnYozC5GzL3TLBC0Um3oieFyWvQF0bOW");
-        this.twitter.setOAuthAccessToken(new AccessToken("3877098085-skJ2Sat6hL3iW6IXWBxAV3MZJVOMi3venxRITjm",
+        twitter.setOAuthAccessToken(new AccessToken("3877098085-skJ2Sat6hL3iW6IXWBxAV3MZJVOMi3venxRITjm",
             "RWFECCxUo1Fe4WJyhVrXGO2o0DBl9lPDEqN1vV4W8OaUl"));
         socialNetworksMonitoredData = new SocialNetworksMonitoredData();
+
+        dataItems = new DataItems();
+    }
+
+    /**
+     * TODO [Agregar documentacion al método]
+     * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
+     */
+    public TwitterMonitorThread() {
     }
 
     /**
@@ -75,7 +80,6 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
      * @return Objecto de respuesta {@link SocialNetworksMonitoredData}
      */
     private SocialNetworksMonitoredData getData() {
-        dataItems = new DataItems();
         try {
             logger.info("query false");
             System.out.println("query false");
@@ -108,6 +112,7 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
     private SocialNetworksMonitoredData getQueryData() {
         logger.info("query true");
         System.out.println("query true");
+        System.out.println("EXPRESSION: " + getExpression());
         queryTwitter = new Query(getExpression());
         QueryResult result;
         try {
