@@ -36,13 +36,24 @@ public class TwitterMonitorTopicRestController {
      */
     @RequestMapping("/on")
     public Response startMonitor(@RequestBody Request request) {
+
+        socialNetworksMonitoringConfProfResponse = new SocialNetworksMonitoringConfProfResponse();
+        ValidationService validationService = new ValidationService();
+
         String msgError = null;
         // Obtenemos los parametros
         String timeSlot = (String) request.getSocialNetworksMonitoringConfProf().get("timeSlot");
         String expression = (String) request.getSocialNetworksMonitoringConfProf().get("keywordExpression");
+        Object[] parametros = { timeSlot, expression };
 
-        socialNetworksMonitoringConfProfResponse = new SocialNetworksMonitoringConfProfResponse();
-        ValidationService validationService = new ValidationService();
+        if (validationService.validaInPar(parametros)) {
+            msgError = "It needs some parameter";
+            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
+                "warning");
+            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+                msgError);
+            return socialNetworksMonitoringConfProfResponse;
+        }
 
         if (trigger == null) {
             trigger = new Trigger();
@@ -53,7 +64,6 @@ public class TwitterMonitorTopicRestController {
             socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
                 msgError);
             return socialNetworksMonitoringConfProfResponse;
-
         }
 
         // Se validan las configuraciones para el hilo
@@ -70,7 +80,6 @@ public class TwitterMonitorTopicRestController {
          * Se valida la expresion.
          * Si no hay expresión no hay query.En caso contrario se valida la Forma Normal Comun*/
         Boolean query = (Objects.isNull(expression)) ? false : true;
-        System.out.println("Caracteres expresion: " + expression.trim().length());
         query = (expression.trim().length() == 0) ? false : true;
         if (query) {
             msgError = validationService.validaExpresion(expression);
@@ -91,8 +100,8 @@ public class TwitterMonitorTopicRestController {
         socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
             "The monitor is up and running");
 
-        TwitterMonitorThread TwitterMonitorThread = new TwitterMonitorThread(query, expression);
-        trigger.execute(TwitterMonitorThread);
+        TwitterMonitorThread twitterMonitorThread = new TwitterMonitorThread(query, expression);
+        trigger.execute(twitterMonitorThread);
 
         return socialNetworksMonitoringConfProfResponse;
 
@@ -125,4 +134,5 @@ public class TwitterMonitorTopicRestController {
             msgError);
         return socialNetworksMonitoringConfProfResponse;
     }
+
 }

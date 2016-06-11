@@ -53,7 +53,7 @@ public class Trigger {
     public void addConfiguration(String timeSlot) {
         this.timeSlot = Long.parseLong(timeSlot);
         this.timeSlot = TwitterUtil.miliToSec(this.timeSlot);
-        System.out.println("Segundos " + timeSlot);
+        logger.debug("Segundos: " + timeSlot);
     }
 
     /**

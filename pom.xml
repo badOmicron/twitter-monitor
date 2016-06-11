@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.bhit.omicron.app</groupId>
 	<artifactId>monitor.twitter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>twitter-monitor</name>
 	<description>Monitor de topics en Twitter.</description>

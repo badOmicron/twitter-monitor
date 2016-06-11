@@ -47,7 +47,6 @@ public class TwitterTask extends TimerTask {
 
     // private TwitterMonitorThread twitterMonitorThread;
     private Callable<?> thread;
-    private ObjectMapper mapper;
 
     /**
      * TODO [Agregar documentacion al método]
@@ -56,7 +55,6 @@ public class TwitterTask extends TimerTask {
     public TwitterTask() {
         // TODO [codificar el cuerpo del método]
         executor = Executors.newCachedThreadPool();
-        mapper = new ObjectMapper();
     }
 
     /**
@@ -76,31 +74,12 @@ public class TwitterTask extends TimerTask {
     @Override
     public void run() {
         // TODO [codificar el cuerpo del método]
-        System.out.println("Ejecutando tarea Twitter Monitor");
         if (thread != null) {
-
             if (!executor.isShutdown()) {
-                SocialNetworksMonitoredData result;
-                Future<Object> resultObject = (Future<Object>) executor.submit(thread);
-
-                try {
-                    result = (SocialNetworksMonitoredData) resultObject.get();
-                    try {
-                        logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
-                    } catch (JsonProcessingException e) {
-                        // TODO [Manejar la excepcion de forma correcta]
-                        System.out.println("Error al imprimir Objeto JSON");
-                        e.printStackTrace();
-                        stop();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                executor.submit(thread);
             }
         } else {
-            System.out.println("No Thread set.");
+            logger.info("No Thread set.");
         }
     }
 
@@ -109,7 +88,7 @@ public class TwitterTask extends TimerTask {
      * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
      */
     public static void stop() {
-        System.out.println("Apagando hilo");
+        logger.info("Apagando hilo");
         Trigger.stopMonitoreoTopicos();
     }
 

@@ -7,6 +7,8 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import mx.bhit.omicron.app.restful.model.DataItems;
 import mx.bhit.omicron.app.restful.model.SocialNetworksMonitoredData;
 import mx.bhit.omicron.app.restful.model.TwitterMessage;
@@ -28,16 +30,16 @@ import twitter4j.auth.AccessToken;
 public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredData> {
     private static final Logger logger = LoggerFactory.getLogger(TwitterMonitorThread.class);
 
-    private static Twitter twitter;
-    private static DataItems dataItems;
-    private static SocialNetworksMonitoredData socialNetworksMonitoredData;
+    private Twitter twitter;
+    private DataItems dataItems;
+    private SocialNetworksMonitoredData socialNetworksMonitoredData;
     private String expression;
     private Boolean query;
     private Query queryTwitter;
+    private ObjectMapper mapper = new ObjectMapper();
 
-    static {
+    {
         logger.info("configurando thread de monitor");
-        System.out.println("configurando thread de monitor");
         // Obtienes una instancia de Twitter.
         twitter = new TwitterFactory().getInstance();
         /*
@@ -52,7 +54,6 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
         twitter.setOAuthAccessToken(new AccessToken("3877098085-skJ2Sat6hL3iW6IXWBxAV3MZJVOMi3venxRITjm",
             "RWFECCxUo1Fe4WJyhVrXGO2o0DBl9lPDEqN1vV4W8OaUl"));
         socialNetworksMonitoredData = new SocialNetworksMonitoredData();
-
         dataItems = new DataItems();
     }
 
@@ -82,7 +83,6 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
     private SocialNetworksMonitoredData getData() {
         try {
             logger.info("query false");
-            System.out.println("query false");
             ResponseList<Status> userTL;
             // Lista de mensajes UserTimeline
             userTL = twitter.getUserTimeline();
@@ -98,6 +98,8 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
                 socialNetworksMonitoredData.getSocialNetworksMonitoredData().put("dataItems",
                     dataItems.getDataItems());
             }
+            logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(socialNetworksMonitoredData));
+
         } catch (Exception e) {
             // TODO: handle exception
             logger.error("error...");
@@ -111,8 +113,6 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
 
     private SocialNetworksMonitoredData getQueryData() {
         logger.info("query true");
-        System.out.println("query true");
-        System.out.println("EXPRESSION: " + getExpression());
         queryTwitter = new Query(getExpression());
         QueryResult result;
         try {
@@ -120,8 +120,6 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
                 result = twitter.search(queryTwitter);
                 List<Status> tweets = result.getTweets();
                 for (Status tweet : tweets) {
-                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
-
                     String url = TwitterUtil.getURLTwitterTopic(tweet.getUser(), tweet.getId());
                     dataItems.getDataItems().add(new TwitterMessage(new Long(tweet.getId()), tweet.getCreatedAt(),
                         tweet.getText().toString(), "@" + tweet.getUser().getScreenName(), url));
@@ -133,11 +131,11 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
                         dataItems.getDataItems());
                 }
             } while ((queryTwitter = result.nextQuery()) != null);
+            logger.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(socialNetworksMonitoredData));
         } catch (Exception e) {
             // TODO: handle exception
-            // TODO: handle exception
             logger.error("error...");
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             e.printStackTrace();
             TwitterTask.stop();
             return new SocialNetworksMonitoredData();
