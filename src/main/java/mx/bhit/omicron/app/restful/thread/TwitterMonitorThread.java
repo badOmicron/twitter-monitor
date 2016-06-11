@@ -41,6 +41,7 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
      */
     public TwitterMonitorThread() {
         logger.info("configurando thread de monitor");
+        System.out.println("configurando thread de monitor");
         // Obtienes una instancia de Twitter.
         this.twitter = new TwitterFactory().getInstance();
         /*
@@ -77,6 +78,7 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
         dataItems = new DataItems();
         try {
             logger.info("query false");
+            System.out.println("query false");
             ResponseList<Status> userTL;
             // Lista de mensajes UserTimeline
             userTL = twitter.getUserTimeline();
@@ -105,6 +107,7 @@ public class TwitterMonitorThread implements Callable<SocialNetworksMonitoredDat
 
     private SocialNetworksMonitoredData getQueryData() {
         logger.info("query true");
+        System.out.println("query true");
         queryTwitter = new Query(getExpression());
         QueryResult result;
         try {

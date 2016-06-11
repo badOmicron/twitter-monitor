@@ -70,6 +70,8 @@ public class TwitterMonitorTopicRestController {
          * Se valida la expresion.
          * Si no hay expresión no hay query.En caso contrario se valida la Forma Normal Comun*/
         Boolean query = (Objects.isNull(expression)) ? false : true;
+        System.out.println("Caracteres expresion: " + expression.trim().length());
+        query = (expression.trim().length() == 0) ? false : true;
         if (query) {
             msgError = validationService.validaExpresion(expression);
             if (msgError != null) {
