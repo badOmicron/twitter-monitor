@@ -16,123 +16,127 @@ import mx.bhit.omicron.app.restful.thread.TwitterMonitorThread;
 
 /**
  * TODO [Agregar documentación de la clase]
- * @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
+ * 
+ * @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx,
+ *         orlandoa.ramos@outlook.com)
  * @version 1.0
  * @since SIIRFE 6.0
  */
 @RestController
 @RequestMapping("/monitor")
 public class TwitterMonitorTopicRestController {
-    private static final Logger logger = LoggerFactory.getLogger(TwitterMonitorTopicRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TwitterMonitorTopicRestController.class);
 
-    private Trigger trigger;
-    private SocialNetworksMonitoringConfProfResponse socialNetworksMonitoringConfProfResponse;
+	private Trigger trigger;
+	private SocialNetworksMonitoringConfProfResponse socialNetworksMonitoringConfProfResponse;
 
-    /**
-     * TODO [Agregar documentacion al método]
-     * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
-     * @param request
-     * @return
-     */
-    @RequestMapping("/on")
-    public Response startMonitor(@RequestBody Request request) {
+	/**
+	 * TODO [Agregar documentacion al método]
+	 * 
+	 * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx,
+	 *         orlandoa.ramos@outlook.com)
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/on")
+	public Response startMonitor(@RequestBody Request request) {
 
-        socialNetworksMonitoringConfProfResponse = new SocialNetworksMonitoringConfProfResponse();
-        ValidationService validationService = new ValidationService();
+		socialNetworksMonitoringConfProfResponse = new SocialNetworksMonitoringConfProfResponse();
+		ValidationService validationService = new ValidationService();
 
-        String msgError = null;
-        // Obtenemos los parametros
-        String timeSlot = (String) request.getSocialNetworksMonitoringConfProf().get("timeSlot");
-        String expression = (String) request.getSocialNetworksMonitoringConfProf().get("keywordExpression");
-        Object[] parametros = { timeSlot, expression };
+		String msgError = null;
+		// Obtenemos los parametros
+		String timeSlot = (String) request.getSocialNetworksMonitoringConfProf().get("timeSlot");
+		String expression = (String) request.getSocialNetworksMonitoringConfProf().get("keywordExpression");
+		String topic = "twitter";
 
-        if (validationService.validaInPar(parametros)) {
-            msgError = "It needs some parameter";
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-                "warning");
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-                msgError);
-            return socialNetworksMonitoringConfProfResponse;
-        }
+		Object[] parametros = { timeSlot, expression };
 
-        if (trigger == null) {
-            trigger = new Trigger();
-        } else {
-            msgError = "The monitor is running";
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-                "warning");
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-                msgError);
-            return socialNetworksMonitoringConfProfResponse;
-        }
+		if (validationService.validaInPar(parametros)) {
+			msgError = "It needs some parameter";
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
+					"warning");
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+					msgError);
+			return socialNetworksMonitoringConfProfResponse;
+		}
 
-        // Se validan las configuraciones para el hilo
-        msgError = validationService.validaTiempo(timeSlot);
-        if (msgError != null) {
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-                "error");
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-                msgError);
-            return socialNetworksMonitoringConfProfResponse;
-        }
+		if (trigger == null) {
+			trigger = new Trigger();
+		} else {
+			msgError = "The monitor is running";
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
+					"warning");
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+					msgError);
+			return socialNetworksMonitoringConfProfResponse;
+		}
 
-        /*
-         * Se valida la expresion.
-         * Si no hay expresión no hay query.En caso contrario se valida la Forma Normal Comun*/
-        Boolean query = (Objects.isNull(expression)) ? false : true;
-        query = (expression.trim().length() == 0) ? false : true;
-        if (query) {
-            msgError = validationService.validaExpresion(expression);
-            if (msgError != null) {
-                socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-                    "error");
-                socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-                    "msgError");
-                return socialNetworksMonitoringConfProfResponse;
-            }
-        }
+		// Se validan las configuraciones para el hilo
+		msgError = validationService.validaTiempo(timeSlot);
+		if (msgError != null) {
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status", "error");
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+					msgError);
+			return socialNetworksMonitoringConfProfResponse;
+		}
 
-        // Si no hubo errores, se agrega la configuración del Thread
-        trigger.addConfiguration(timeSlot);
+		/*
+		 * Se valida la expresion. Si no hay expresión no hay query.En caso
+		 * contrario se valida la Forma Normal Comun
+		 */
+		Boolean query = (Objects.isNull(expression)) ? false : true;
+		query = (expression.trim().length() == 0) ? false : true;
+		if (query) {
+			msgError = validationService.validaExpresion(expression);
+			if (msgError != null) {
+				socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
+						"error");
+				socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+						"msgError");
+				return socialNetworksMonitoringConfProfResponse;
+			}
+		}
 
-        socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-            "success");
-        socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-            "The monitor is up and running");
+		// Si no hubo errores, se agrega la configuración del Thread
+		trigger.addConfiguration(timeSlot);
 
-        TwitterMonitorThread twitterMonitorThread = new TwitterMonitorThread(query, expression);
-        trigger.execute(twitterMonitorThread);
+		socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status", "success");
+		socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+				"The monitor is up and running");
 
-        return socialNetworksMonitoringConfProfResponse;
+		TwitterMonitorThread twitterMonitorThread = new TwitterMonitorThread(query, expression, topic);
+		trigger.execute(twitterMonitorThread);
 
-    }
+		return socialNetworksMonitoringConfProfResponse;
 
-    /**
-     * TODO [Agregar documentacion al método]
-     * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
-     * @return
-     */
-    @RequestMapping("/off")
-    public Response stopMonitor() {
-        String msgError = null;
-        socialNetworksMonitoringConfProfResponse = new SocialNetworksMonitoringConfProfResponse();
+	}
 
-        if (trigger == null) {
-            msgError = "the monitor is already off";
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-                "error");
-            socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-                msgError);
-            return socialNetworksMonitoringConfProfResponse;
-        }
-        Trigger.stopMonitoreoTopicos();
-        trigger = null;
-        msgError = "the monitor has stopped";
-        socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status",
-            "success");
-        socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
-            msgError);
-        return socialNetworksMonitoringConfProfResponse;
-    }
+	/**
+	 * TODO [Agregar documentacion al método]
+	 * 
+	 * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx,
+	 *         orlandoa.ramos@outlook.com)
+	 * @return
+	 */
+	@RequestMapping("/off")
+	public Response stopMonitor() {
+		String msgError = null;
+		socialNetworksMonitoringConfProfResponse = new SocialNetworksMonitoringConfProfResponse();
+
+		if (trigger == null) {
+			msgError = "the monitor is already off";
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status", "error");
+			socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message",
+					msgError);
+			return socialNetworksMonitoringConfProfResponse;
+		}
+		Trigger.stopMonitoreoTopicos();
+		trigger = null;
+		msgError = "the monitor has stopped";
+		socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("status", "success");
+		socialNetworksMonitoringConfProfResponse.getSocialNetworksMonitoringConfProfResult().put("message", msgError);
+		return socialNetworksMonitoringConfProfResponse;
+	}
 
 }
