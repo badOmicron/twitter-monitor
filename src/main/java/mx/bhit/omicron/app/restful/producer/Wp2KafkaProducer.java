@@ -1,5 +1,6 @@
 package mx.bhit.omicron.app.restful.producer;
 
+import java.nio.channels.ClosedChannelException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -19,35 +20,38 @@ public class Wp2KafkaProducer {
 
     private final kafka.javaapi.producer.Producer<Integer, String> producer;
     private final String topic;
+    private final String kafkaEndpoint;
     private final Properties props = new Properties();
 
     /**
      * TODO [Agregar documentacion al método]
      * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
+     * @param kafkaTopic
+     * @param kafkaEndpoint
      */
-    public Wp2KafkaProducer(String topic) {
+    public Wp2KafkaProducer(String kafkaTopic, String kafkaEndpoint) {
         props.put("serializer.class", "kafka.serializer.StringEncoder");
-        props.put("metadata.broker.list", "localhost:9092");
-        // Use random partitioner. Don't need the key type. Just set it to Integer.
-        // The message is of type String.
+        props.put("metadata.broker.list", kafkaEndpoint);
         producer = new kafka.javaapi.producer.Producer<Integer, String>(new ProducerConfig(props));
-        this.topic = topic;
+        this.topic = kafkaTopic;
+        this.kafkaEndpoint = kafkaEndpoint;
     }
 
     /**
      * TODO [Agregar documentacion al método]
      * @author @author Orlando Adrián Ramos Galván (orlando.ramos@ine.mx, orlandoa.ramos@outlook.com)
-     * @param topic
      * @param content
      */
-    public void writeToKafka(String content) {
-        logger.debug("Writing to kafkaTopic [" + topic + "]");
+    public void writeToKafka(String content) throws ClosedChannelException {
+        logger.debug("Escribiendo al kafkaTopic [" + topic + "]");
         String messageStr = new String(content);
-        producer.send(new KeyedMessage<Integer, String>(this.topic, messageStr));
+        try {
+            producer.send(new KeyedMessage<Integer, String>(this.topic, messageStr));
+        } catch (Exception e) {
+            // TODO: handle exception
+            String msg = "Error al intentar consumir el servicio Kafka con ENDPONT: " + this.kafkaEndpoint
+                + " causa : " + e.getMessage();
+            logger.error(msg);
+        }
     }
-
-    // public static void main(String[] args) {
-    // Wp2KafkaProducer Wp2KafkaProducer = new Wp2KafkaProducer("twitter");
-    // Wp2KafkaProducer.writeToKafka("twitter", "Orlando Ramos Galvan");
-    // }
 }
